@@ -1,3 +1,5 @@
 pandas
 numpy
 duckdb
+dbt-duckdb
+mashumaro>=3.17
