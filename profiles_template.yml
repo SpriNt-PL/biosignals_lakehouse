@@ -1,0 +1,19 @@
+# Instruction
+# Copy the contents of this file to C:\Users\TwojeImie\.dbt\profiles.yml
+# Repace uppercased values which proper ones.
+
+biosignals_lakehouse:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: 'dev_lakehouse.duckdb'
+      extensions:
+        - httpfs
+      secrets:
+        - type: s3
+          key_id: 'ENTER_MINIO_LOGIN'
+          secret: 'ENTER_MINIO_PASSWORD'
+          endpoint: 'VM_ADDRESS:9000'
+          url_style: 'path'
+          use_ssl: false
