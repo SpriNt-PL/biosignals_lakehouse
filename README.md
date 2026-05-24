@@ -1,15 +1,11 @@
-Welcome to your new dbt project!
+### Instalation
 
-### Using the starter project
+- Create venv (optional but I suggest to do it): py -m venv .venv
+- Make sure your terminal is in venv
+- Install all libraries: pip install --no-cache-dir requirements.txt
+- Configure profiles.yml file according to the instruction in profiles_template.yml.
+- Run dbt: dbt run (make sure you are in biosignals_lakehouse directory)
 
-Try running the following commands:
-- dbt run
-- dbt test
 
 
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [chat](https://community.getdbt.com/) on Slack for live discussions and support
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+
