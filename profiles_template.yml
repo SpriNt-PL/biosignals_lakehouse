@@ -1,5 +1,7 @@
 # Instruction
 # Copy the contents of this file to C:\Users\TwojeImie\.dbt\profiles.yml
+# If directory .dbt and/or file profiles.yml do not exist then create them so that the path
+# above is preserved.
 # Repace uppercased values which proper ones.
 
 biosignals_lakehouse:
