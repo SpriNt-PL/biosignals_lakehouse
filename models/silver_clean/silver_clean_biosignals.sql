@@ -22,6 +22,6 @@ FROM raw_data
 
 WHERE ts IS NOT NULL
   AND student_id IS NOT NULL
-  AND gsr IS NOT NULL
-  AND ppg IS NOT NULL
-  AND hr IS NOT NULL
+  AND gsr IS NOT NULL AND gsr >= 0
+  AND ppg IS NOT NULL AND ppg >= 0
+  AND hr IS NOT NULL AND hr BETWEEN 0 AND 250
