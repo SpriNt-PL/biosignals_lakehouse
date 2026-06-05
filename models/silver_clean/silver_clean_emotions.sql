@@ -27,3 +27,10 @@ FROM raw_data
 
 WHERE ts IS NOT NULL
   AND student_id IS NOT NULL
+  AND emotions.HAPPY BETWEEN 0.0 AND 1.0
+  AND emotions.SAD BETWEEN 0.0 AND 1.0
+  AND emotions.ANGRY BETWEEN 0.0 AND 1.0
+  AND emotions.SURPRISE BETWEEN 0.0 AND 1.0
+  AND emotions.CONTEMPT BETWEEN 0.0 AND 1.0
+  AND emotions.FOCUS BETWEEN 0.0 AND 1.0
+  AND confidence BETWEEN 0.0 AND 1.0
