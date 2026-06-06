@@ -21,11 +21,14 @@ session_bound AS (
 time_grid AS (
     SELECT
         b.participation_id,
-        b.first_timestamp + INTERVAL (steps.step * 300) MILLISECOND AS integrated_timestamp
+        b.first_timestamp + CAST(steps.step AS BIGINT) * INTERVAL '300 ms' AS integrated_timestamp
     FROM session_bound b
     CROSS JOIN (
-        SELECT range AS step
-        FROM generate_series(0, (SELECT MAX(total_duration_ms)/300 FROM session_bound))
+        SELECT generate_series AS step
+        FROM generate_series(
+            0, 
+            (SELECT CAST(MAX(total_duration_ms) / 300 AS BIGINT) FROM session_bound)
+        )
     ) steps
     WHERE b.first_timestamp+ INTERVAL (steps.step*300) MILLISECOND <= b.last_timestamp
 ),
