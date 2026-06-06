@@ -26,7 +26,6 @@ integrated_buckets AS (
         floor((date_sub('ms', s.first_timestamp, d.timestamp)) / 300) * 300 AS bucket_ms,
         s.first_timestamp + INTERVAL (floor((date_sub('ms', s.first_timestamp, d.timestamp)) / 300) * 300) MILLISECOND AS integrated_timestamp
     FROM source_data d
-    FROM source_data d
     JOIN session_start s ON d.participation_id=s.participation_id
 )
 
