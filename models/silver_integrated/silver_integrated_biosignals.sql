@@ -23,9 +23,9 @@ integrated_buckets AS (
         d.gsr,
         d.ppg,
         d.hr,
-        epoch_ms(d.timestamp)-epoch_ms(s.timestamp) AS ms_from_start,
+        epoch_ms(d.timestamp)-epoch_ms(s.first_timestamp) AS ms_from_start,
         floor((epoch_ms(d.timestamp)-epoch_ms(s.timestamp))/300)*300 AS bucket_ms,
-        s.first_timestamp+INTERVAL (bucket_ms) MILLISECOND AS integrated_timestamp
+        to_timestamp(epoch_ms(s.first_timestamp) + CAST(floor((epoch_ms(d.timestamp) - epoch_ms(s.first_timestamp)) / 300) * 300 AS BIGINT)) AS integrated_timestamp
     FROM source_data d
     JOIN session_start s ON d.participation_id=s.participation_id
 )
@@ -35,7 +35,7 @@ SELECT
     integrated_timestamp AS timestamp,
     ROUND(AVG(gsr),3) AS gsr,
     ROUND(AVG(ppg),3) AS ppg,
-    ROUND(AVG(hr),3) AS hr,
+    ROUND(AVG(hr),3) AS hr
 FROM integrated_buckets
 GROUP BY participation_id, integrated_timestamp
 ORDER BY participation_id, integrated_timestamp
