@@ -8,12 +8,26 @@ WITH source_data AS (
     SELECT * FROM read_parquet('s3://silver-clean/biosignals/data.parquet')
 ),
 
-session_start AS (
+session_bound AS (
     SELECT
         participation_id,
-        MIN(timestamp) AS first_timestamp
+        MIN(timestamp) AS first_timestamp,
+        MAX(timestamp) AS last_timestamp,
+        date_sub('ms', MIN(timestamp), MAX(timestamp)) AS total_duration_ms
     FROM source_data
     GROUP BY participation_id
+),
+
+time_grid AS (
+    SELECT
+        b.participation_id,
+        b.first_timestamp + INTERVAL (steps.step * 300) MILLISECOND AS integrated_timestamp
+    FROM session_bound b
+    CROSS JOIN (
+        SELECT range AS step
+        FROM generate_series(0, (SELECT MAX(total_duration_ms)/300 FROM session_bound))
+    ) steps
+    WHERE b.first_timestamp+ INTERVAL (steps.step*300) MILLISECOND <= b.last_timestamp
 ),
 
 integrated_buckets AS (
@@ -26,15 +40,45 @@ integrated_buckets AS (
         floor((date_sub('ms', s.first_timestamp, d.timestamp)) / 300) * 300 AS bucket_ms,
         s.first_timestamp + INTERVAL (floor((date_sub('ms', s.first_timestamp, d.timestamp)) / 300) * 300) MILLISECOND AS integrated_timestamp
     FROM source_data d
-    JOIN session_start s ON d.participation_id=s.participation_id
+    JOIN session_bound s ON d.participation_id=s.participation_id
+),
+
+aggregations AS (
+    SELECT
+        participation_id,
+        integrated_timestamp AS timestamp,
+        AVG(gsr) AS gsr,
+        AVG(ppg) AS ppg,
+        AVG(hr) AS hr
+    FROM integrated_buckets
+    GROUP BY participation_id, integrated_timestamp
+),
+
+create_nulls AS (
+    SELECT
+        g.participation_id,
+        g.integrated_timestamp,
+        a.gsr,
+        a.ppg,
+        a.hr
+    FROM time_grid g
+    LEFT JOIN aggregations a ON g.participation_id=a.participation_id AND g.integrated_timestamp=a.timestamp
 )
 
 SELECT
     participation_id,
     integrated_timestamp AS timestamp,
-    ROUND(AVG(gsr),3) AS gsr,
-    ROUND(AVG(ppg),3) AS ppg,
-    ROUND(AVG(hr),3) AS hr
-FROM integrated_buckets
-GROUP BY participation_id, integrated_timestamp
-ORDER BY participation_id, integrated_timestamp
+    ROUND(
+        COALESCE(gsr, LAG(gsr) IGNORE NULLS OVER (PARTITION BY participation_id ORDER BY integrated_timestamp)), 
+        3
+    ) AS gsr,
+    ROUND(
+        COALESCE(ppg, LAG(ppg) IGNORE NULLS OVER (PARTITION BY participation_id ORDER BY integrated_timestamp)), 
+        3
+    ) AS ppg,
+    ROUND(
+        COALESCE(hr, LAG(hr) IGNORE NULLS OVER (PARTITION BY participation_id ORDER BY integrated_timestamp)), 
+        3
+    ) AS hr
+FROM create_nulls
+ORDER BY participation_id, timestamp
