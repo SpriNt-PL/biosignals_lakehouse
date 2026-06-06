@@ -24,7 +24,7 @@ integrated_buckets AS (
         d.ppg,
         d.hr,
         epoch_ms(d.timestamp)-epoch_ms(s.first_timestamp) AS ms_from_start,
-        floor((epoch_ms(d.timestamp)-epoch_ms(s.timestamp))/300)*300 AS bucket_ms,
+        floor((epoch_ms(d.timestamp)-epoch_ms(s.first_timestamp))/300)*300 AS bucket_ms,
         to_timestamp(epoch_ms(s.first_timestamp) + CAST(floor((epoch_ms(d.timestamp) - epoch_ms(s.first_timestamp)) / 300) * 300 AS BIGINT)) AS integrated_timestamp
     FROM source_data d
     JOIN session_start s ON d.participation_id=s.participation_id
