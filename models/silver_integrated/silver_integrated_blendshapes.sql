@@ -5,7 +5,7 @@
 }}
 
 WITH source_data AS (
-    SELECT * FROM read_parquet('s3://silver-clean/blendshapes/data.parquet')
+    SELECT * FROM {{ ref('silver_clean_blendshapes') }}
 ),
 
 session_bound AS (

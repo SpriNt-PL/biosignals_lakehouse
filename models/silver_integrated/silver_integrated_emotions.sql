@@ -5,9 +5,8 @@
 }}
 
 WITH source_data AS (
-    SELECT * FROM read_parquet('s3://silver-clean/emotions/data.parquet')
+    SELECT * FROM {{ ref('silver_clean_emotions') }}
 ),
-
 session_bound AS (
     SELECT
         participation_id,

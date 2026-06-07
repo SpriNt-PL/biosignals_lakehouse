@@ -5,7 +5,7 @@
 }}
 
 WITH source_data AS (
-    SELECT * FROM read_parquet('s3://silver-clean/biosignals/data.parquet')
+    SELECT * FROM {{ ref('silver_clean_biosignals') }}
 ),
 
 session_bound AS (
