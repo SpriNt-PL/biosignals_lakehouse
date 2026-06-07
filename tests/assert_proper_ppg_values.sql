@@ -1,3 +1,3 @@
 SELECT *
 FROM {{ ref('silver_clean_biosignals') }}
-WHERE gsr < 0
+WHERE ppg < 0
