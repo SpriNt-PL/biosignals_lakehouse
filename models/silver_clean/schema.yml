@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: silver_clean_biosignals
+    columns:
+      - name: participation_id
+        tests:
+          - not_null
+        
+      - name: timestamp
+        tests:
+          - not_null
+
+  - name: silver_clean_blendshapes
+    columns:
+      - name: participation_id
+        tests:
+          - not_null
+        
+      - name: timestamp
+        tests:
+          - not_null
+
+  - name: silver_clean_emotions
+    columns:
+      - name: participation_id
+        tests:
+          - not_null
+      
+      - name: dominant
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['HAPPY', 'SAD', 'ANGRY', 'SURPRISE', 'DISGUST', 'NEUTRAL']
