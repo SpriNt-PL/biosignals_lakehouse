@@ -18,7 +18,7 @@ SELECT DISTINCT
     CAST(emotions.HAPPY AS FLOAT) AS emotion_happy,
     CAST(emotions.SAD AS FLOAT) AS emotion_sad,
     CAST(emotions.ANGRY AS FLOAT) AS emotion_angry,
-    CAST(emotions.SURPRISE AS FLOAT) AS emotion_suprise,
+    CAST(emotions.SURPRISE AS FLOAT) AS emotion_surprise,
     CAST(emotions.DISGUST AS FLOAT) AS emotion_disgust,
     CAST(emotions.NEUTRAL AS FLOAT) AS emotion_neutral,
     CAST(dominant AS VARCHAR) AS dominant,
