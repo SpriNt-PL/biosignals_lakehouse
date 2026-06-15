@@ -33,3 +33,24 @@ models:
           - accepted_values:
               arguments:
                 values: ['HAPPY', 'SAD', 'ANGRY', 'SURPRISE', 'DISGUST', 'NEUTRAL']
+
+  - name: silver_clean_participant
+    columns:
+      - name: participant_id
+        tests:
+          - not_null
+          - unique
+
+  - name: silver_clean_session
+    columns:
+      - name: session_id
+        tests:
+          - not_null
+          - unique
+
+  - name: silver_clean_participation
+    columns:
+      - name: participation_id
+        tests:
+          - not_null
+          - unique
