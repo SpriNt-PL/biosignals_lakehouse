@@ -10,7 +10,7 @@ WITH raw_data AS (
 )
 
 SELECT DISTINCT
-    CAST(participantid AS INT) AS participation_id,
+    CAST(participantid AS INT) AS participant_id,
     CAST(name AS VARCHAR) AS name,
     CAST(birthday AS DATE) AS birthday,
     UPPER(TRIM(CAST(gender AS VARCHAR))) AS gender
