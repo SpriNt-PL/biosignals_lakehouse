@@ -7,8 +7,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('silver_clean_participation')
-              field: participation_id
+              arguments:
+                to: ref('silver_clean_participation')
+                field: participation_id
         
       - name: timestamp
         tests:
@@ -43,6 +44,12 @@ models:
         tests:
           - not_null
           - unique
+      
+      - name: gender
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['MALE', 'FEMALE', 'OTHER']
 
   - name: silver_clean_session
     columns:
@@ -62,12 +69,14 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('silver_clean_participant')
-              field: participant_id
+              arguments:
+                to: ref('silver_clean_participant')
+                field: participant_id
 
       - name: session_id
         tests:
           - not_null
           - relationships:
-              to: ref('silver_clean_session')
-              field: session_id
+              arguments:
+                to: ref('silver_clean_session')
+                field: session_id
