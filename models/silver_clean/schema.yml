@@ -6,6 +6,9 @@ models:
       - name: participation_id
         tests:
           - not_null
+          - relationships:
+              to: ref('silver_clean_participation')
+              field: participation_id
         
       - name: timestamp
         tests:
@@ -61,7 +64,7 @@ models:
           - relationships:
               to: ref('silver_clean_participant')
               field: participant_id
-              
+
       - name: session_id
         tests:
           - not_null
