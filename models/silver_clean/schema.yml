@@ -4,7 +4,7 @@ models:
   - name: silver_clean_biosignals
     columns:
       - name: participation_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -12,27 +12,27 @@ models:
                 field: participation_id
         
       - name: timestamp
-        tests:
+        data_tests:
           - not_null
 
   - name: silver_clean_blendshapes
     columns:
       - name: participation_id
-        tests:
+        data_tests:
           - not_null
         
       - name: timestamp
-        tests:
+        data_tests:
           - not_null
 
   - name: silver_clean_emotions
     columns:
       - name: participation_id
-        tests:
+        data_tests:
           - not_null
       
       - name: dominant
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -41,12 +41,12 @@ models:
   - name: silver_clean_participant
     columns:
       - name: participant_id
-        tests:
+        data_tests:
           - not_null
           - unique
       
       - name: gender
-        tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values: ['MALE', 'FEMALE', 'OTHER']
@@ -54,19 +54,19 @@ models:
   - name: silver_clean_session
     columns:
       - name: session_id
-        tests:
+        data_tests:
           - not_null
           - unique
 
   - name: silver_clean_participation
     columns:
       - name: participation_id
-        tests:
+        data_tests:
           - not_null
           - unique
 
       - name: participant_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -74,7 +74,7 @@ models:
                 field: participant_id
 
       - name: session_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
