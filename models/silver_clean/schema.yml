@@ -7,9 +7,8 @@ models:
         data_tests:
           - not_null
           - relationships:
-              arguments:
-                to: ref('silver_clean_participation')
-                field: participation_id
+              to: ref('silver_clean_participation')
+              field: participation_id
         
       - name: timestamp
         data_tests:
@@ -35,8 +34,7 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              arguments:
-                values: ['HAPPY', 'SAD', 'ANGRY', 'SURPRISE', 'DISGUST', 'NEUTRAL']
+              values: ['HAPPY', 'SAD', 'ANGRY', 'SURPRISE', 'DISGUST', 'NEUTRAL']
 
   - name: silver_clean_participant
     columns:
@@ -48,8 +46,7 @@ models:
       - name: gender
         data_tests:
           - accepted_values:
-              arguments:
-                values: ['MALE', 'FEMALE', 'OTHER']
+              values: ['MALE', 'FEMALE', 'OTHER']
 
   - name: silver_clean_session
     columns:
@@ -69,14 +66,12 @@ models:
         data_tests:
           - not_null
           - relationships:
-              arguments:
-                to: ref('silver_clean_participant')
-                field: participant_id
+              to: ref('silver_clean_participant')
+              field: participant_id
 
       - name: session_id
         data_tests:
           - not_null
           - relationships:
-              arguments:
-                to: ref('silver_clean_session')
-                field: session_id
+              to: ref('silver_clean_session')
+              field: session_id
