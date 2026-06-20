@@ -24,10 +24,9 @@ time_grid AS (
         b.first_timestamp + CAST(steps.step AS BIGINT) * INTERVAL '1 second' AS integrated_timestamp
     FROM session_bound b
     CROSS JOIN (
-        SELECT generate_series AS step
-        FROM generate_series(0, CAST((SELECT MAX(total_duration_s) FROM session_bound) AS INT))
+        SELECT range AS step FROM range(0, 1000000)
     ) steps
-    WHERE b.first_timestamp + CAST(steps.step AS BIGINT) * INTERVAL '1 second' <= b.last_timestamp
+    WHERE steps.step <= b.total_duration_s
 ),
 
 integrated_buckets AS (
