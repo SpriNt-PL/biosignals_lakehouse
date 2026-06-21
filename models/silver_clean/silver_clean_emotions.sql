@@ -13,7 +13,7 @@ WITH raw_data AS (
 -- so we can not create PARTICIPATION for now and in the result we do not have
 -- participation_id.
 SELECT DISTINCT
-    CAST(student_id AS VARCHAR) AS participation_id, -- TO BE CHANGED
+    CAST(participation_id AS VARCHAR) AS participation_id, -- TO BE CHANGED
     epoch_ms(CAST(ts AS BIGINT)) AS timestamp,
     CAST(emotions.HAPPY AS FLOAT) AS emotion_happy,
     CAST(emotions.SAD AS FLOAT) AS emotion_sad,
@@ -26,7 +26,7 @@ SELECT DISTINCT
 FROM raw_data
 
 WHERE ts IS NOT NULL
-  AND student_id IS NOT NULL
+  AND participation_id IS NOT NULL
   AND emotions.HAPPY BETWEEN 0.0 AND 1.0
   AND emotions.SAD BETWEEN 0.0 AND 1.0
   AND emotions.ANGRY BETWEEN 0.0 AND 1.0

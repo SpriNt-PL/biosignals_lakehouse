@@ -13,7 +13,7 @@ WITH raw_data AS (
 -- so we can not create PARTICIPATION for now and in the result we do not have
 -- participation_id.
 SELECT DISTINCT
-    CAST(student_id AS VARCHAR) AS participation_id, -- TO BE CHANGED
+    CAST(participation_id AS VARCHAR) AS participation_id, -- TO BE CHANGED
     epoch_ms(CAST(ts AS BIGINT)) AS timestamp,
     CAST(blendshapes."_neutral" AS FLOAT) AS blendshape_neutral,
     CAST(blendshapes.browDownLeft AS FLOAT) AS blendshape_browDownLeft,
@@ -70,7 +70,7 @@ SELECT DISTINCT
 FROM raw_data
 
 WHERE ts IS NOT NULL
-AND student_id IS NOT NULL
+AND participation_id IS NOT NULL
 AND blendshapes."_neutral" BETWEEN 0.0 AND 1.0
 AND blendshapes.browDownLeft BETWEEN 0.0 AND 1.0
 AND blendshapes.browDownRight BETWEEN 0.0 AND 1.0
