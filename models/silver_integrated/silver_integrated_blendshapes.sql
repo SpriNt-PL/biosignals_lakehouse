@@ -11,9 +11,9 @@ WITH source_data AS (
 session_bound AS (
     SELECT
         participation_id,
-        MIN(timestamp) AS first_timestamp,
-        MAX(timestamp) AS last_timestamp,
-        date_sub('ms', MIN(timestamp), MAX(timestamp)) AS total_duration_ms
+        date_trunc('second', MIN(timestamp)) AS first_timestamp,
+        date_trunc('second', MAX(timestamp)) AS last_timestamp,
+        date_sub('second', date_trunc('second', MIN(timestamp)), date_trunc('second', MAX(timestamp))) AS total_duration_s
     FROM source_data
     GROUP BY participation_id
 ),
@@ -21,16 +21,12 @@ session_bound AS (
 time_grid AS (
     SELECT
         b.participation_id,
-        b.first_timestamp + CAST(steps.step AS BIGINT) * INTERVAL '300 ms' AS integrated_timestamp
+        b.first_timestamp + CAST(steps.step AS BIGINT) * INTERVAL '1 second' AS integrated_timestamp
     FROM session_bound b
     CROSS JOIN (
-        SELECT generate_series AS step
-        FROM generate_series(
-            0, 
-            (SELECT CAST(MAX(total_duration_ms) / 300 AS BIGINT) FROM session_bound)
-        )
+        SELECT range AS step FROM range(0, 1000000)
     ) steps
-    WHERE b.first_timestamp+ INTERVAL (steps.step*300) MILLISECOND <= b.last_timestamp
+    WHERE steps.step <= b.total_duration_s
 ),
 
 integrated_buckets AS (
@@ -46,9 +42,7 @@ integrated_buckets AS (
         d.blendshape_mouthPressLeft, d.blendshape_mouthPressRight, d.blendshape_mouthPucker, d.blendshape_mouthRight, d.blendshape_mouthRollLower, d.blendshape_mouthRollUpper,
         d.blendshape_mouthShrugLower, d.blendshape_mouthShrugUpper, d.blendshape_mouthSmileLeft, d.blendshape_mouthSmileRight, d.blendshape_mouthStretchLeft, d.blendshape_mouthStretchRight,
         d.blendshape_mouthUpperUpLeft, d.blendshape_mouthUpperUpRight, d.blendshape_noseSneerLeft, d.blendshape_noseSneerRight,
-        floor((date_sub('ms', s.first_timestamp, d.timestamp)) / 300) * 300 AS bucket_ms,
-        s.first_timestamp + INTERVAL (floor((date_sub('ms', s.first_timestamp, d.timestamp)) / 300) * 300) MILLISECOND AS integrated_timestamp
-    FROM source_data d
+        date_trunc('second', d.timestamp) AS integrated_timestamp
     JOIN session_bound s ON d.participation_id=s.participation_id
 ),
 
@@ -64,7 +58,8 @@ aggregations AS (
         AVG(blendshape_mouthFrownLeft) AS blendshape_mouthFrownLeft, AVG(blendshape_mouthFrownRight) AS blendshape_mouthFrownRight, AVG(blendshape_mouthFunnel) AS blendshape_mouthFunnel, AVG(blendshape_mouthLeft) AS blendshape_mouthLeft, AVG(blendshape_mouthLowerDownLeft) AS blendshape_mouthLowerDownLeft, AVG(blendshape_mouthLowerDownRight) AS blendshape_mouthLowerDownRight,
         AVG(blendshape_mouthPressLeft) AS blendshape_mouthPressLeft, AVG(blendshape_mouthPressRight) AS blendshape_mouthPressRight, AVG(blendshape_mouthPucker) AS blendshape_mouthPucker, AVG(blendshape_mouthRight) AS blendshape_mouthRight, AVG(blendshape_mouthRollLower) AS blendshape_mouthRollLower, AVG(blendshape_mouthRollUpper) AS blendshape_mouthRollUpper,
         AVG(blendshape_mouthShrugLower) AS blendshape_mouthShrugLower, AVG(blendshape_mouthShrugUpper) AS blendshape_mouthShrugUpper, AVG(blendshape_mouthSmileLeft) AS blendshape_mouthSmileLeft, AVG(blendshape_mouthSmileRight) AS blendshape_mouthSmileRight, AVG(blendshape_mouthStretchLeft) AS blendshape_mouthStretchLeft, AVG(blendshape_mouthStretchRight) AS blendshape_mouthStretchRight,
-        AVG(blendshape_mouthUpperUpLeft) AS blendshape_mouthUpperUpLeft, AVG(blendshape_mouthUpperUpRight) AS blendshape_mouthUpperUpRight, AVG(blendshape_noseSneerLeft) AS blendshape_noseSneerLeft, AVG(blendshape_noseSneerRight) AS blendshape_noseSneerRight
+        AVG(blendshape_mouthUpperUpLeft) AS blendshape_mouthUpperUpLeft, AVG(blendshape_mouthUpperUpRight) AS blendshape_mouthUpperUpRight, AVG(blendshape_noseSneerLeft) AS blendshape_noseSneerLeft, AVG(blendshape_noseSneerRight) AS blendshape_noseSneerRight,
+        COUNT(*) AS record_count
     FROM integrated_buckets
     GROUP BY participation_id, integrated_timestamp
 ),
@@ -81,7 +76,8 @@ create_nulls AS (
         a.blendshape_mouthFrownLeft, a.blendshape_mouthFrownRight, a.blendshape_mouthFunnel, a.blendshape_mouthLeft, a.blendshape_mouthLowerDownLeft, a.blendshape_mouthLowerDownRight,
         a.blendshape_mouthPressLeft, a.blendshape_mouthPressRight, a.blendshape_mouthPucker, a.blendshape_mouthRight, a.blendshape_mouthRollLower, a.blendshape_mouthRollUpper,
         a.blendshape_mouthShrugLower, a.blendshape_mouthShrugUpper, a.blendshape_mouthSmileLeft, a.blendshape_mouthSmileRight, a.blendshape_mouthStretchLeft, a.blendshape_mouthStretchRight,
-        a.blendshape_mouthUpperUpLeft, a.blendshape_mouthUpperUpRight, a.blendshape_noseSneerLeft, a.blendshape_noseSneerRight
+        a.blendshape_mouthUpperUpLeft, a.blendshape_mouthUpperUpRight, a.blendshape_noseSneerLeft, a.blendshape_noseSneerRight,
+        COALESCE(a.record_count, 0) AS record_count
     FROM time_grid g
     LEFT JOIN aggregations a ON g.participation_id=a.participation_id AND g.integrated_timestamp=a.timestamp
 )
@@ -140,6 +136,7 @@ SELECT
     ROUND(COALESCE(blendshape_mouthUpperUpLeft, LAST_VALUE(blendshape_mouthUpperUpLeft IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS blendshape_mouthUpperUpLeft,
     ROUND(COALESCE(blendshape_mouthUpperUpRight, LAST_VALUE(blendshape_mouthUpperUpRight IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS blendshape_mouthUpperUpRight,
     ROUND(COALESCE(blendshape_noseSneerLeft, LAST_VALUE(blendshape_noseSneerLeft IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS blendshape_noseSneerLeft,
-    ROUND(COALESCE(blendshape_noseSneerRight, LAST_VALUE(blendshape_noseSneerRight IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS blendshape_noseSneerRight
+    ROUND(COALESCE(blendshape_noseSneerRight, LAST_VALUE(blendshape_noseSneerRight IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS blendshape_noseSneerRight,
+    record_count
 FROM create_nulls
 ORDER BY participation_id, timestamp
