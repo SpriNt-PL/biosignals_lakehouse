@@ -43,6 +43,7 @@ integrated_buckets AS (
         d.blendshape_mouthShrugLower, d.blendshape_mouthShrugUpper, d.blendshape_mouthSmileLeft, d.blendshape_mouthSmileRight, d.blendshape_mouthStretchLeft, d.blendshape_mouthStretchRight,
         d.blendshape_mouthUpperUpLeft, d.blendshape_mouthUpperUpRight, d.blendshape_noseSneerLeft, d.blendshape_noseSneerRight,
         date_trunc('second', d.timestamp) AS integrated_timestamp
+    FROM source_data d
     JOIN session_bound s ON d.participation_id=s.participation_id
 ),
 
