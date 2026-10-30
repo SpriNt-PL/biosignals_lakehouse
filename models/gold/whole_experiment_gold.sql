@@ -11,7 +11,11 @@ session_data AS (
     SELECT * FROM {{ ref('silver_integrated_session') }}
 ),
 biosignals_data AS (
-    SELECT * FROM {{ ref('silver_integrated_biosignals') }}
+    SELECT 
+    MIN(timestamp) AS start_time,
+    MAX(timestamp) AS end_time,
+    MIN(CAST(timestamp AS DATE)) AS experiment_date
+    FROM {{ ref('silver_integrated_biosignals') }}
 ),
 blendshapes_data AS (
     SELECT * FROM {{ ref('silver_integrated_blendshapes') }}
@@ -24,6 +28,10 @@ participation_data AS (
 ),
 
 SELECT 
+uuid() AS id,
+b.experiment_date,
+b.start_time,
+b.end_time,
 p.name,
 p.gender,
 p.birthday,
