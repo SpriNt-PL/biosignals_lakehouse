@@ -27,13 +27,13 @@ emotions_data AS (
 ),
 participation_data AS (
     SELECT * FROM {{ ref('silver_integrated_participation') }}
-),
+)
 
 SELECT 
 uuid() AS id,
-b.experiment_date,
-b.start_time,
-b.end_time,
+bi.experiment_date,
+bi.start_time,
+bi.end_time,
 p.name,
 p.gender,
 p.birthday,
