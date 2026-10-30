@@ -1,6 +1,6 @@
 {{ config(
     materialized='external',  
-    location='s3://gold/whole_experiment_gold/data.parquet'
+    location='s3://gold/whole-experiment-gold/data.parquet'
 )
 }}
 
