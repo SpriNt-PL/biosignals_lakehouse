@@ -13,8 +13,8 @@ session_data AS (
 biosignals_data AS (
     SELECT 
     participation_id,
-    MIN(timestamp) AS start_time,
-    MAX(timestamp) AS end_time,
+    CAST(MIN(timestamp) AS TIME) AS start_time,
+    CAST(MAX(timestamp) AS TIME) AS end_time,
     MIN(CAST(timestamp AS DATE)) AS experiment_date
     FROM {{ ref('silver_integrated_biosignals') }}
     GROUP BY participation_id
