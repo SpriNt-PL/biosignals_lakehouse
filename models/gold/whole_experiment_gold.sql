@@ -51,10 +51,17 @@ s.location,
 s.experiment_type,
 bi.sum_gsr,
 bi.count_gsr,
-bi.avg_gsr
+bi.avg_gsr,
+bi.sum_ppg,
+bi.count_ppg,
+bi.avg_ppg,
+bi.sum_hr,
+bi.count_hr,
+bi.avg_hr
 FROM participation_data pr 
 LEFT JOIN participant_data p ON p.participant_id=pr.participant_id
 LEFT JOIN session_data s ON s.session_id=pr.session_id
 LEFT JOIN biosignals_data bi ON pr.participation_id=bi.participation_id
 LEFT JOIN blendshapes_data bl ON pr.participation_id=bl.participation_id
 LEFT JOIN emotions_data e ON e.participation_id=pr.participation_id
+WHERE bi.experiment_date IS NOT NULL
