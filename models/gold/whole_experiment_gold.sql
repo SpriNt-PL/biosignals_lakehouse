@@ -7,15 +7,25 @@
 WITH participant_data AS (
     SELECT * FROM {{ ref('silver_integrated_participant') }}
 ),
-WITH session_data AS (
+session_data AS (
     SELECT * FROM {{ ref('silver_integrated_session') }}
 ),
-WITH biosignals_data AS (
+biosignals_data AS (
     SELECT * FROM {{ ref('silver_integrated_biosignals') }}
 ),
-WITH blendshapes_data AS (
+blendshapes_data AS (
     SELECT * FROM {{ ref('silver_integrated_blendshapes') }}
 ),
-WITH emotions_data AS (
+emotions_data AS (
     SELECT * FROM {{ ref('silver_integrated_emotions') }}
 ),
+participation_data AS (
+    SELECT * FROM {{ ref('silver_integrated_participation') }}
+),
+SELECT *
+FROM participation_data pr 
+LEFT JOIN participant_data p ON p.participant_id=pr.participant_id
+LEFT JOIN session_data s ON s.session_id=pr.session_id
+LEFT JOIN biosignals_data bi ON pr.participation_id=bi.participation_id
+LEFT JOIN blendshapes_data bl ON pr.participation_id=bl.participation_id
+LEFT JOIN emotions_data e ON e.participation_id=pr.participation_id
