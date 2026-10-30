@@ -22,7 +22,14 @@ emotions_data AS (
 participation_data AS (
     SELECT * FROM {{ ref('silver_integrated_participation') }}
 ),
-SELECT *
+
+SELECT 
+p.name,
+p.gender,
+p.birthday,
+s.session_id,
+s.location,
+s.experiment_type
 FROM participation_data pr 
 LEFT JOIN participant_data p ON p.participant_id=pr.participant_id
 LEFT JOIN session_data s ON s.session_id=pr.session_id
