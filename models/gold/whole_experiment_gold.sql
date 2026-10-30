@@ -15,7 +15,10 @@ biosignals_data AS (
     participation_id,
     CAST(MIN(timestamp) AS TIME) AS start_time,
     CAST(MAX(timestamp) AS TIME) AS end_time,
-    MIN(CAST(timestamp AS DATE)) AS experiment_date
+    MIN(CAST(timestamp AS DATE)) AS experiment_date,
+    SUM(gsr*record_count) AS sum_gsr,
+    SUM(record_count) AS count_gsr,
+    (sum_gsr/count_gsr) AS avg_gsr
     FROM {{ ref('silver_integrated_biosignals') }}
     GROUP BY participation_id
 ),
