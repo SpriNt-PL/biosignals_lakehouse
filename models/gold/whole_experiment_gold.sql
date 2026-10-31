@@ -39,7 +39,7 @@ emotions_data AS (
     SUM(CASE WHEN UPPER(dominant) = 'ANGRY' THEN 1 ELSE 0 END) AS emotion_angry_seconds,
     SUM(CASE WHEN UPPER(dominant) = 'SURPRISE' THEN 1 ELSE 0 END) AS emotion_surprise_seconds,
     SUM(CASE WHEN UPPER(dominant) = 'DISGUST' THEN 1 ELSE 0 END) AS emotion_disgust_seconds,
-    SUM(CASE WHEN UPPER(dominant) = 'NEUTRAL' THEN 1 ELSE 0 END) AS emotion_neutral_seconds
+    SUM(CASE WHEN UPPER(dominant) = 'NEUTRAL' THEN 1 ELSE 0 END) AS emotion_neutral_seconds,
     AVG(emotion_happy) AS emotion_happy_avg,
     AVG(emotion_sad) AS emotion_sad_avg,
     AVG(emotion_angry) AS emotion_angry_avg,
