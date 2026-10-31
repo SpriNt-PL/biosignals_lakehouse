@@ -34,12 +34,12 @@ blendshapes_data AS (
 emotions_data AS (
     SELECT
     participation_id,
-    COUNT(CASE WHEN UPPER(dominant) = 'HAPPY' THEN 1 END) AS emotion_happy_seconds,
-    COUNT(CASE WHEN UPPER(dominant) = 'SAD' THEN 1 END) AS emotion_sad_seconds,
-    COUNT(CASE WHEN UPPER(dominant) = 'ANGRY' THEN 1 END) AS emotion_angry_seconds,
-    COUNT(CASE WHEN UPPER(dominant) = 'SURPRISE' THEN 1 END) AS emotion_surprise_seconds,
-    COUNT(CASE WHEN UPPER(dominant) = 'DISGUST' THEN 1 END) AS emotion_disgust_seconds,
-    COUNT(CASE WHEN UPPER(dominant) = 'NEUTRAL' THEN 1 END) AS emotion_neutral_seconds,
+    SUM(CASE WHEN UPPER(dominant) = 'HAPPY' THEN 1 ELSE 0 END) AS emotion_happy_seconds,
+    SUM(CASE WHEN UPPER(dominant) = 'SAD' THEN 1 ELSE 0 END) AS emotion_sad_seconds,
+    SUM(CASE WHEN UPPER(dominant) = 'ANGRY' THEN 1 ELSE 0 END) AS emotion_angry_seconds,
+    SUM(CASE WHEN UPPER(dominant) = 'SURPRISE' THEN 1 ELSE 0 END) AS emotion_surprise_seconds,
+    SUM(CASE WHEN UPPER(dominant) = 'DISGUST' THEN 1 ELSE 0 END) AS emotion_disgust_seconds,
+    SUM(CASE WHEN UPPER(dominant) = 'NEUTRAL' THEN 1 ELSE 0 END) AS emotion_neutral_seconds
     AVG(emotion_happy) AS emotion_happy_avg,
     AVG(emotion_sad) AS emotion_sad_avg,
     AVG(emotion_angry) AS emotion_angry_avg,
@@ -95,3 +95,4 @@ LEFT JOIN session_data s ON s.session_id=pr.session_id
 LEFT JOIN biosignals_data bi ON pr.participation_id=bi.participation_id
 LEFT JOIN blendshapes_data bl ON pr.participation_id=bl.participation_id
 LEFT JOIN emotions_data e ON e.participation_id=pr.participation_id
+WHERE bi.experiment_date IS NOT NULL
