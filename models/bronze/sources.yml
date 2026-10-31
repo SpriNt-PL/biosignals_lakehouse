@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: bronze_metadata
+    tables:
+      - name: participation
+        meta:
+          external_location: "s3://metadata-bucket/participation/*.parquet"
+      
+      - name: participant
+        meta:
+          external_location: "s3://metadata-bucket/participant/*.parquet"
+          
+      - name: session
+        meta:
+          external_location: "s3://metadata-bucket/session/*.parquet"
