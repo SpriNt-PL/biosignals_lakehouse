@@ -34,12 +34,12 @@ blendshapes_data AS (
 emotions_data AS (
     SELECT
     participation_id,
-    COUNT(CASE WHEN dominant = 'HAPPY' THEN 1 END) AS emotion_happy_seconds,
-    COUNT(CASE WHEN dominant = 'SAD' THEN 1 END) AS emotion_sad_seconds,
-    COUNT(CASE WHEN dominant = 'ANGRY' THEN 1 END) AS emotion_angry_seconds,
-    COUNT(CASE WHEN dominant = 'SURPRISE' THEN 1 END) AS emotion_surprise_seconds,
-    COUNT(CASE WHEN dominant = 'DISGUST' THEN 1 END) AS emotion_disgust_seconds,
-    COUNT(CASE WHEN dominant = 'NEUTRAL' THEN 1 END) AS emotion_neutral_seconds,
+    COUNT(CASE WHEN UPPER(dominant) = 'HAPPY' THEN 1 END) AS emotion_happy_seconds,
+    COUNT(CASE WHEN UPPER(dominant) = 'SAD' THEN 1 END) AS emotion_sad_seconds,
+    COUNT(CASE WHEN UPPER(dominant) = 'ANGRY' THEN 1 END) AS emotion_angry_seconds,
+    COUNT(CASE WHEN UPPER(dominant) = 'SURPRISE' THEN 1 END) AS emotion_surprise_seconds,
+    COUNT(CASE WHEN UPPER(dominant) = 'DISGUST' THEN 1 END) AS emotion_disgust_seconds,
+    COUNT(CASE WHEN UPPER(dominant) = 'NEUTRAL' THEN 1 END) AS emotion_neutral_seconds
     FROM {{ ref('silver_integrated_emotions') }}
     GROUP BY participation_id
 ),
