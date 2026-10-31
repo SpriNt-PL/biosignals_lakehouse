@@ -39,7 +39,15 @@ emotions_data AS (
     COUNT(CASE WHEN UPPER(dominant) = 'ANGRY' THEN 1 END) AS emotion_angry_seconds,
     COUNT(CASE WHEN UPPER(dominant) = 'SURPRISE' THEN 1 END) AS emotion_surprise_seconds,
     COUNT(CASE WHEN UPPER(dominant) = 'DISGUST' THEN 1 END) AS emotion_disgust_seconds,
-    COUNT(CASE WHEN UPPER(dominant) = 'NEUTRAL' THEN 1 END) AS emotion_neutral_seconds
+    COUNT(CASE WHEN UPPER(dominant) = 'NEUTRAL' THEN 1 END) AS emotion_neutral_seconds,
+    AVG(emotion_happy) AS emotion_happy_avg,
+    AVG(emotion_sad) AS emotion_sad_avg,
+    AVG(emotion_angry) AS emotion_angry_avg,
+    AVG(emotion_surprise) AS emotion_surprise_avg,
+    AVG(emotion_disgust) AS emotion_disgust_avg,
+    AVG(emotion_neutral) AS emotion_neutral_avg,
+    AVG(confidence) AS emotion_confidence_avg,
+    MODE(dominant) AS emotion_dominant_overall
     FROM {{ ref('silver_integrated_emotions') }}
     GROUP BY participation_id
 ),
@@ -72,7 +80,15 @@ e.emotion_sad_seconds,
 e.emotion_angry_seconds,
 e.emotion_surprise_seconds,
 e.emotion_disgust_seconds,
-e.emotion_neutral_seconds
+e.emotion_neutral_seconds,
+e.emotion_happy_avg,
+e.emotion_sad_avg,
+e.emotion_angry_avg,
+e.emotion_surprise_avg,
+e.emotion_disgust_avg,
+e.emotion_neutral_avg,
+e.emotion_confidence_avg,
+e.emotion_dominant_overall
 FROM participation_data pr 
 LEFT JOIN participant_data p ON p.participant_id=pr.participant_id
 LEFT JOIN session_data s ON s.session_id=pr.session_id
