@@ -41,6 +41,7 @@ emotions_data AS (
     COUNT(CASE WHEN dominant = 'disgust' THEN 1 END) AS emotion_disgust_seconds,
     COUNT(CASE WHEN dominant = 'neutral' THEN 1 END) AS emotion_neutral_seconds,
     FROM {{ ref('silver_integrated_emotions') }}
+    GROUP BY participation_id
 ),
 participation_data AS (
     SELECT * FROM {{ ref('silver_integrated_participation') }}
