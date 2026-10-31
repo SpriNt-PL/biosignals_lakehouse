@@ -32,7 +32,15 @@ blendshapes_data AS (
     SELECT * FROM {{ ref('silver_integrated_blendshapes') }}
 ),
 emotions_data AS (
-    SELECT * FROM {{ ref('silver_integrated_emotions') }}
+    SELECT
+    participation_id,
+    COUNT(CASE WHEN dominant = 'happy' THEN 1 END) AS emotion_happy_seconds,
+    COUNT(CASE WHEN dominant = 'sad' THEN 1 END) AS emotion_sad_seconds,
+    COUNT(CASE WHEN dominant = 'angry' THEN 1 END) AS emotion_angry_seconds,
+    COUNT(CASE WHEN dominant = 'surprise' THEN 1 END) AS emotion_surprise_seconds,
+    COUNT(CASE WHEN dominant = 'disgust' THEN 1 END) AS emotion_disgust_seconds,
+    COUNT(CASE WHEN dominant = 'neutral' THEN 1 END) AS emotion_neutral_seconds,
+    FROM {{ ref('silver_integrated_emotions') }}
 ),
 participation_data AS (
     SELECT * FROM {{ ref('silver_integrated_participation') }}
@@ -57,7 +65,13 @@ bi.count_ppg,
 bi.avg_ppg,
 bi.sum_hr,
 bi.count_hr,
-bi.avg_hr
+bi.avg_hr,
+e.emotion_happy_seconds,
+e.emotion_sad_seconds,
+e.emotion_angry_seconds,
+e.emotion_surprise_seconds,
+e.emotion_disgust_seconds,
+e.emotion_neutral_seconds
 FROM participation_data pr 
 LEFT JOIN participant_data p ON p.participant_id=pr.participant_id
 LEFT JOIN session_data s ON s.session_id=pr.session_id
