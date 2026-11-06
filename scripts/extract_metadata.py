@@ -24,6 +24,9 @@ con.execute("COPY postgres_meta.public.participant TO 's3://metadata-bucket/part
 print("Extracting SESSION to Bronze...")
 con.execute("COPY postgres_meta.public.session TO 's3://metadata-bucket/session/data.parquet' (FORMAT PARQUET);")
 
+print("Extracting STATION to Bronze...")
+con.execute("COPY postgres_meta.public.station TO 's3://metadata-bucket/station/data.parquet' (FORMAT PARQUET);")
+
 print("Extracting PARTICIPATION to Bronze...")
 con.execute("COPY postgres_meta.public.participation TO 's3://metadata-bucket/participation/data.parquet' (FORMAT PARQUET);")
 print("Extraction complete! Metadata is now in the Bronze layer.")
