@@ -45,9 +45,9 @@ aggregations AS (
     SELECT
         participation_id,
         integrated_timestamp AS timestamp,
-        AVG(gsr) AS gsr,
-        AVG(ppg) AS ppg,
-        AVG(hr) AS hr,
+        SUM(gsr) AS gsr_sum,
+        SUM(ppg) AS ppg_sum,
+        SUM(hr) AS hr_sum,
         COUNT(*) AS record_count
     FROM integrated_buckets
     GROUP BY participation_id, integrated_timestamp
@@ -57,9 +57,9 @@ create_nulls AS (
     SELECT
         g.participation_id,
         g.integrated_timestamp,
-        a.gsr,
-        a.ppg,
-        a.hr,
+        a.gsr_sum,
+        a.ppg_sum,
+        a.hr_sum,
         COALESCE(a.record_count, 0) AS record_count
     FROM time_grid g
     LEFT JOIN aggregations a ON g.participation_id=a.participation_id AND g.integrated_timestamp=a.timestamp

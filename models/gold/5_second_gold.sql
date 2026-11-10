@@ -23,13 +23,13 @@ biosignals_data AS (
     CAST(MIN(timestamp) AS TIME) AS start_time,
     CAST(MAX(timestamp) AS TIME) AS end_time,
     MIN(CAST(timestamp AS DATE)) AS experiment_date,
-    SUM(gsr*record_count) AS sum_gsr,
+    SUM(gsr) AS sum_gsr,
     SUM(record_count) AS count_gsr,
     ROUND((sum_gsr/count_gsr),2) AS avg_gsr,
-    SUM(ppg*record_count) AS sum_ppg,
+    SUM(ppg) AS sum_ppg,
     SUM(record_count) AS count_ppg,
     ROUND((sum_ppg/count_ppg),2) AS avg_ppg,
-    SUM(hr*record_count) AS sum_hr,
+    SUM(hr) AS sum_hr,
     SUM(record_count) AS count_hr,
     ROUND((sum_hr/count_hr),2) AS avg_hr
     FROM {{ ref('silver_integrated_biosignals') }}
@@ -102,13 +102,13 @@ emotions_data AS (
     SUM(CASE WHEN UPPER(dominant) = 'SURPRISE' THEN 1 ELSE 0 END) AS emotion_surprise_seconds,
     SUM(CASE WHEN UPPER(dominant) = 'DISGUST' THEN 1 ELSE 0 END) AS emotion_disgust_seconds,
     SUM(CASE WHEN UPPER(dominant) = 'NEUTRAL' THEN 1 ELSE 0 END) AS emotion_neutral_seconds,
-    AVG(emotion_happy) AS emotion_happy_avg,
-    AVG(emotion_sad) AS emotion_sad_avg,
-    AVG(emotion_angry) AS emotion_angry_avg,
-    AVG(emotion_surprise) AS emotion_surprise_avg,
-    AVG(emotion_disgust) AS emotion_disgust_avg,
-    AVG(emotion_neutral) AS emotion_neutral_avg,
-    AVG(confidence) AS emotion_confidence_avg,
+    ROUND(emotion_happy_sum/record_count,2) AS emotion_happy_avg,
+    ROUND(emotion_sad_sum/record_count,2) AS emotion_sad_avg,
+    ROUND(emotion_angry_sum/record_count,2) AS emotion_angry_avg,
+    ROUND(emotion_surprise_sum/record_count,2) AS emotion_surprise_avg,
+    ROUND(emotion_disgust_sum/record_count,2) AS emotion_disgust_avg,
+    ROUND(emotion_neutral_sum/record_count,2) AS emotion_neutral_avg,
+    ROUND(confidence_sum/record_count,2) AS emotion_confidence_avg,
     MODE(dominant) AS emotion_dominant_overall
     FROM {{ ref('silver_integrated_emotions') }}
     GROUP BY participation_id

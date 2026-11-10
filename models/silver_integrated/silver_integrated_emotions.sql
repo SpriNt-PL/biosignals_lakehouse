@@ -50,14 +50,14 @@ aggregations AS (
     SELECT
         participation_id,
         integrated_timestamp AS timestamp,
-        AVG(emotion_happy) AS emotion_happy,
-        AVG(emotion_sad) AS emotion_sad,
-        AVG(emotion_angry) AS emotion_angry,
-        AVG(emotion_surprise) AS emotion_surprise,
-        AVG(emotion_disgust) AS emotion_disgust,
-        AVG(emotion_neutral) AS emotion_neutral,
+        SUM(emotion_happy) AS emotion_happy_sum,
+        SUM(emotion_sad) AS emotion_sad_sum,
+        SUM(emotion_angry) AS emotion_angry_sum,
+        SUM(emotion_surprise) AS emotion_surprise_sum,
+        SUM(emotion_disgust) AS emotion_disgust_sum,
+        SUM(emotion_neutral) AS emotion_neutral_sum,
         MAX(dominant) AS dominant,
-        AVG(confidence) AS confidence,
+        SUM(confidence) AS confidence_sum,
         COUNT(*) AS record_count
     FROM integrated_buckets
     GROUP BY participation_id, integrated_timestamp
