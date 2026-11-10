@@ -69,21 +69,21 @@ SELECT
     participation_id,
     integrated_timestamp AS timestamp,
     ROUND(
-        COALESCE(gsr_sum, LAST_VALUE(gsr IGNORE NULLS) OVER (
+        COALESCE(gsr_sum, LAST_VALUE(gsr_sum IGNORE NULLS) OVER (
             PARTITION BY participation_id 
             ORDER BY integrated_timestamp
             ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
         )), 3
     ) AS gsr_sum,
     ROUND(
-        COALESCE(ppg_sum, LAST_VALUE(ppg IGNORE NULLS) OVER (
+        COALESCE(ppg_sum, LAST_VALUE(ppg_sum IGNORE NULLS) OVER (
             PARTITION BY participation_id 
             ORDER BY integrated_timestamp
             ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
         )), 3
     ) AS ppg_sum,
     ROUND(
-        COALESCE(hr_sum, LAST_VALUE(hr IGNORE NULLS) OVER (
+        COALESCE(hr_sum, LAST_VALUE(hr_sum IGNORE NULLS) OVER (
             PARTITION BY participation_id 
             ORDER BY integrated_timestamp
             ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
