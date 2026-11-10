@@ -10,7 +10,8 @@ WITH source_data AS (
 
 SELECT
     session_id,
-    session_date,
     location,
     experiment_type
+    start_time,
+    end_time
 FROM source_data
