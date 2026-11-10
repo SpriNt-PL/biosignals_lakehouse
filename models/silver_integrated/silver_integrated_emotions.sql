@@ -67,14 +67,14 @@ create_nulls AS (
     SELECT
         g.participation_id,
         g.integrated_timestamp,
-        a.emotion_happy,
-        a.emotion_sad,
-        a.emotion_angry,
-        a.emotion_surprise,
-        a.emotion_disgust,
-        a.emotion_neutral,
+        a.emotion_happy_sum,
+        a.emotion_sad_sum,
+        a.emotion_angry_sum,
+        a.emotion_surprise_sum,
+        a.emotion_disgust_sum,
+        a.emotion_neutral_sum,
         a.dominant,
-        a.confidence,
+        a.confidence_sum,
         COALESCE(a.record_count, 0) AS record_count
     FROM time_grid g
     LEFT JOIN aggregations a ON g.participation_id=a.participation_id AND g.integrated_timestamp=a.timestamp
@@ -83,14 +83,14 @@ create_nulls AS (
 SELECT
     participation_id,
     integrated_timestamp AS timestamp,
-    ROUND(COALESCE(emotion_happy, LAST_VALUE(emotion_happy IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_happy,
-    ROUND(COALESCE(emotion_sad, LAST_VALUE(emotion_sad IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_sad,
-    ROUND(COALESCE(emotion_angry, LAST_VALUE(emotion_angry IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_angry,
-    ROUND(COALESCE(emotion_surprise, LAST_VALUE(emotion_surprise IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_surprise,
-    ROUND(COALESCE(emotion_disgust, LAST_VALUE(emotion_disgust IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_disgust,
-    ROUND(COALESCE(emotion_neutral, LAST_VALUE(emotion_neutral IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_neutral,
+    ROUND(COALESCE(emotion_happy_sum, LAST_VALUE(emotion_happy_sum IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_happy_sum,
+    ROUND(COALESCE(emotion_sad_sum, LAST_VALUE(emotion_sad_sum IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_sad_sum,
+    ROUND(COALESCE(emotion_angry_sum, LAST_VALUE(emotion_angry_sum IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_angry_sum,
+    ROUND(COALESCE(emotion_surprise_sum, LAST_VALUE(emotion_surprise_sum IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_surprise_sum,
+    ROUND(COALESCE(emotion_disgust_sum, LAST_VALUE(emotion_disgust_sum IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_disgust_sum,
+    ROUND(COALESCE(emotion_neutral_sum, LAST_VALUE(emotion_neutral_sum IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS emotion_neutral_sum,
     COALESCE(dominant, LAST_VALUE(dominant IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) AS dominant,
-    ROUND(COALESCE(confidence, LAST_VALUE(confidence IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS confidence,
+    ROUND(COALESCE(confidence_sum, LAST_VALUE(confidence_sum IGNORE NULLS) OVER (PARTITION BY participation_id ORDER BY integrated_timestamp ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)), 3) AS confidence_sum,
     record_count
 FROM create_nulls
 ORDER BY participation_id, timestamp
