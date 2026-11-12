@@ -8,14 +8,24 @@ WITH source_data AS (
     SELECT * FROM {{ ref('silver_clean_blendshapes') }}
 ),
 
+times_data AS (
+    SELECT start_time, end_time FROM {{ ref('silver_integrated_session') }}
+),
+
+participation AS (
+    SELECT * FROM {{ ref('silver_integrated_participation') }}
+),
+
 session_bound AS (
     SELECT
-        participation_id,
-        date_trunc('second', MIN(timestamp)) AS first_timestamp,
-        date_trunc('second', MAX(timestamp)) AS last_timestamp,
-        date_sub('second', date_trunc('second', MIN(timestamp)), date_trunc('second', MAX(timestamp))) AS total_duration_s
-    FROM source_data
-    GROUP BY participation_id
+        sou.participation_id,
+        se.start_time AS first_timestamp,
+        se.end_time AS last_timestamp,
+        date_sub('second', se.start_time, se.end_time) AS total_duration_s
+    FROM source_data sou
+    JOIN participation p ON sou.participation_id=p.participation_id
+    JOIN times_data se ON se.session_id=p.session_id
+    GROUP BY sou.participation_id, se.start_time, se.end_time
 ),
 
 time_grid AS (

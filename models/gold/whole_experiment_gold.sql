@@ -113,8 +113,8 @@ participation_data AS (
 SELECT 
 uuid() AS id,
 bi.experiment_date,
-bi.start_time,
-bi.end_time,
+s.start_time,
+s.end_time,
 p.name,
 p.gender,
 p.birthday,
