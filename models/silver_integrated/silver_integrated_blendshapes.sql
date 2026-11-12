@@ -9,7 +9,7 @@ WITH source_data AS (
 ),
 
 times_data AS (
-    SELECT start_time, end_time FROM {{ ref('silver_integrated_session') }}
+    SELECT session_id, start_time, end_time FROM {{ ref('silver_integrated_session') }}
 ),
 
 participation AS (
