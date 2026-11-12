@@ -11,7 +11,7 @@ WITH source_data AS (
 SELECT
     session_id,
     location,
-    experiment_type
+    experiment_type,
     start_time,
     end_time
 FROM source_data
