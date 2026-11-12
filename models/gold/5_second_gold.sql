@@ -23,13 +23,13 @@ biosignals_data AS (
     CAST(MIN(timestamp) AS TIME) AS start_time,
     CAST(MAX(timestamp) AS TIME) AS end_time,
     MIN(CAST(timestamp AS DATE)) AS experiment_date,
-    SUM(gsr) AS sum_gsr,
+    SUM(gsr_sum) AS sum_gsr,
     SUM(record_count) AS count_gsr,
     ROUND((sum_gsr/count_gsr),2) AS avg_gsr,
-    SUM(ppg) AS sum_ppg,
+    SUM(ppg_sum) AS sum_ppg,
     SUM(record_count) AS count_ppg,
     ROUND((sum_ppg/count_ppg),2) AS avg_ppg,
-    SUM(hr) AS sum_hr,
+    SUM(hr_sum) AS sum_hr,
     SUM(record_count) AS count_hr,
     ROUND((sum_hr/count_hr),2) AS avg_hr
     FROM {{ ref('silver_integrated_biosignals') }}
