@@ -102,13 +102,13 @@ emotions_data AS (
     SUM(CASE WHEN UPPER(dominant) = 'SURPRISE' THEN 1 ELSE 0 END) AS emotion_surprise_seconds,
     SUM(CASE WHEN UPPER(dominant) = 'DISGUST' THEN 1 ELSE 0 END) AS emotion_disgust_seconds,
     SUM(CASE WHEN UPPER(dominant) = 'NEUTRAL' THEN 1 ELSE 0 END) AS emotion_neutral_seconds,
-    ROUND(emotion_happy_sum/record_count,2) AS emotion_happy_avg,
-    ROUND(emotion_sad_sum/record_count,2) AS emotion_sad_avg,
-    ROUND(emotion_angry_sum/record_count,2) AS emotion_angry_avg,
-    ROUND(emotion_surprise_sum/record_count,2) AS emotion_surprise_avg,
-    ROUND(emotion_disgust_sum/record_count,2) AS emotion_disgust_avg,
-    ROUND(emotion_neutral_sum/record_count,2) AS emotion_neutral_avg,
-    ROUND(confidence_sum/record_count,2) AS emotion_confidence_avg,
+    ROUND(SUM(emotion_happy_sum) / NULLIF(SUM(record_count), 0), 2) AS emotion_happy_avg,
+    ROUND(SUM(emotion_sad_sum) / NULLIF(SUM(record_count), 0), 2) AS emotion_sad_avg,
+    ROUND(SUM(emotion_angry_sum) / NULLIF(SUM(record_count), 0), 2) AS emotion_angry_avg,
+    ROUND(SUM(emotion_surprise_sum) / NULLIF(SUM(record_count), 0), 2) AS emotion_surprise_avg,
+    ROUND(SUM(emotion_disgust_sum) / NULLIF(SUM(record_count), 0), 2) AS emotion_disgust_avg,
+    ROUND(SUM(emotion_neutral_sum) / NULLIF(SUM(record_count), 0), 2) AS emotion_neutral_avg,
+    ROUND(SUM(confidence_sum) / NULLIF(SUM(record_count), 0), 2) AS emotion_confidence_avg,
     MODE(dominant) AS emotion_dominant_overall
     FROM {{ ref('silver_integrated_emotions') }}
     GROUP BY participation_id
