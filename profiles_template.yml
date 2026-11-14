@@ -1,8 +1,8 @@
 # Instruction
-# Copy the contents of this file to C:\Users\TwojeImie\.dbt\profiles.yml
+# Copy the contents of this file to C:\Users\<YourUsername>\.dbt\profiles.yml
 # If directory .dbt and/or file profiles.yml do not exist then create them so that the path
 # above is preserved.
-# Repace uppercased values which proper ones.
+# Replace uppercased values with proper ones.
 
 biosignals_lakehouse:
   target: dev
@@ -12,6 +12,12 @@ biosignals_lakehouse:
       path: 'dev_lakehouse.duckdb'
       extensions:
         - httpfs
+        - postgres
+      attach:
+        - path: "dbname=experiment_db user=USERNAME password=PASSWORD host=localhost port=5432"
+          alias: postgres_meta
+          type: postgres
+          read_only: true
       secrets:
         - type: s3
           key_id: 'ENTER_MINIO_LOGIN'

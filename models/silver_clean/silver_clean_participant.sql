@@ -6,7 +6,7 @@
 }}
 
 WITH raw_data AS (
-    SELECT * FROM read_parquet('s3://metadata-bucket/participant/*.parquet')
+    SELECT * FROM {{ ref('bronze_participant') }}
 )
 
 SELECT DISTINCT
