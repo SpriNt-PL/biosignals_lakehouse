@@ -10,6 +10,9 @@ WITH participant_data AS (
 session_data AS (
     SELECT * FROM {{ ref('silver_integrated_session') }}
 ),
+participation_data AS (
+    SELECT * FROM {{ ref('silver_integrated_participation') }}
+),
 age_data AS (
     SELECT
     pt.participant_id,
@@ -115,9 +118,6 @@ emotions_data AS (
     MODE(dominant) AS emotion_dominant_overall
     FROM {{ ref('silver_integrated_emotions') }}
     GROUP BY participation_id
-),
-participation_data AS (
-    SELECT * FROM {{ ref('silver_integrated_participation') }}
 )
 
 SELECT 
