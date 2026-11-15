@@ -213,3 +213,4 @@ LEFT JOIN biosignals_data bi ON pr.participation_id=bi.participation_id
 LEFT JOIN blendshapes_data bl ON pr.participation_id=bl.participation_id
 LEFT JOIN emotions_data e ON e.participation_id=pr.participation_id
 WHERE bi.experiment_date IS NOT NULL
+ORDER BY tw.window_start

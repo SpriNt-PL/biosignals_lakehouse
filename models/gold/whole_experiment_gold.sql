@@ -10,6 +10,16 @@ WITH participant_data AS (
 session_data AS (
     SELECT * FROM {{ ref('silver_integrated_session') }}
 ),
+age_data AS (
+    SELECT
+    pt.participant_id,
+    pn.participation_id,
+    s.session_id,
+    date_diff('year', pt.birthday, s.start_time) AS age
+    FROM participation_data pn
+    JOIN participant_data pt ON pn.participant_id = pt.participant_id
+    JOIN session_data s ON pn.session_id = s.session_id
+),
 biosignals_data AS (
     SELECT 
     participation_id,
@@ -117,7 +127,7 @@ s.start_time,
 s.end_time,
 p.name,
 p.gender,
-p.birthday,
+a.age,
 s.session_id,
 s.location,
 s.experiment_type,
@@ -202,4 +212,5 @@ LEFT JOIN session_data s ON s.session_id=pr.session_id
 LEFT JOIN biosignals_data bi ON pr.participation_id=bi.participation_id
 LEFT JOIN blendshapes_data bl ON pr.participation_id=bl.participation_id
 LEFT JOIN emotions_data e ON e.participation_id=pr.participation_id
+LEFT JOIN age_data a ON a.participation_id=pr.participation_id
 WHERE bi.experiment_date IS NOT NULL
