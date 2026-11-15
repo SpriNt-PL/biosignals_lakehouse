@@ -19,8 +19,8 @@ participation AS (
 session_bound AS (
     SELECT
         sou.participation_id,
-        se.start_time AS first_timestamp,
-        se.end_time AS last_timestamp,
+        date_trunc('second', se.start_time) AS first_timestamp,
+        date_trunc('second', se.end_time) AS last_timestamp,
         date_sub('second', se.start_time, se.end_time) AS total_duration_s
     FROM source_data sou
     JOIN participation p ON sou.participation_id=p.participation_id
